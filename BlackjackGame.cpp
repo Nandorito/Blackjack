@@ -170,19 +170,33 @@ void Deck::Deal(Hand& aHand)
         aHand.Add(m_Cards.back());
         m_Cards.pop_back();
     }
-    else cout << "Out of cards. Unable to deal.";
+    else
+    { 
+        cout << "Out of cards. Unable to deal.\n";
+    }
 }
 
 void Deck::AdditionalCards(GenericPlayer& aGenericPlayer)
 {
     cout << endl;
     //continue to deal a cardas long as generic player isnt busted and wants it
-    while(!(aGenericPlayer.IsBusted()) && aGenericPlayer.IsHitting())
+    while(!(aGenericPlayer.IsBusted()) && aGenericPlayer.IsHitting()) //turns out this statement only works while there are cards left in the deck
     {
         Deal(aGenericPlayer);
+
+        //FIRST BUG FIXED HERE. check to see if there are any cards left. if so, break the infinite loop
+        if(m_Cards.empty())
+        {
+            break;
+        }
+
+        
         cout << aGenericPlayer << endl;
 
-        if(aGenericPlayer.IsBusted()) aGenericPlayer.Busts();
+        if(aGenericPlayer.IsBusted())
+        {
+            aGenericPlayer.Busts();
+        }
     }
 }
 
@@ -193,6 +207,7 @@ void Deck::AdditionalCards(GenericPlayer& aGenericPlayer)
 
 void Blackjack::Play()
 {
+
     //deal inital 2 cards to everyone
     vector<Player>::iterator pPlayer;
     for (int i = 0; i < 2; i++)
@@ -215,6 +230,8 @@ void Blackjack::Play()
 
     cout << m_House << endl;
 
+
+    
     //deal additional cards to players
     for (pPlayer = m_Players.begin(); pPlayer != m_Players.end(); pPlayer++)
         m_Deck.AdditionalCards(*pPlayer);
